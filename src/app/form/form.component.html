@@ -1,0 +1,75 @@
+<button type="button" class="btn btn-primary" (click)="addQuestionModal=true" *ngIf="questions.length<1">Add
+    Questions</button>
+<ng-container *ngIf="questions.length>0">
+    <form role="form" (ngSubmit)="reviewSubmit()" [formGroup]="reviewForm">
+        <div class="row">
+            <div class="form-group col-md-12">
+                <label class="col-md-12 text-center">Please tell us about yourself ?</label>
+                <textarea id="area" class="form-control" placeholder="tell us about yourself"
+                    formControlName="about"></textarea>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="form-group col-md-12" *ngFor="let qData of questions, let i =index">
+                        <strong>{{i+1}}. {{qData.question}}</strong>
+                        <ul *ngIf="qData.type == 'CHECKBOX'" style="list-style: none;">
+                            <li *ngFor="let option of qData.options; let j=index;"><input type="checkbox" name="i"
+                                    value="j" (change)="addAnswer($event,i,j)"> {{option}}</li>
+                        </ul>
+                        <div *ngIf="qData.type == 'PARAGRAPH'">
+                            <textarea id="area" class="form-control" placeholder="Enter Answer" #para
+                                (change)="addParagraphAnswer(i,para.value)"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                <button type="button" class="btn btn-primary btn-sm" (click)="addQuestionModal=true;">Add New
+                    Question</button>
+            </div>
+            <div class="form-group col-md-12">
+                <button type="submit" class="btn btn-success float-right" [disabled]="!reviewForm.valid">Review my
+                    Answers</button>
+            </div>
+        </div>
+    </form>
+</ng-container>
+
+<p-dialog header="Add New Question" [(visible)]="addQuestionModal" [style]="{width: '30vw'}">
+    <form role="form" (ngSubmit)="addQuestion()" [formGroup]="questionForm">
+        <div class="row">
+            <div class="form-group col-md-12">
+                <select class="form-control" #type formControlName="type" (change)="typeChange(type.value)">
+                    <option value="">Select Question Type</option>
+                    <option value="CHECKBOX">Checkbox</option>
+                    <option value="PARAGRAPH">Paragraph</option>
+                </select>
+            </div>
+            <div class="form-group col-md-12">
+                <textarea id="area" class="form-control" placeholder="Enter Your Question"
+                    formControlName="question"></textarea>
+            </div>
+            <div class="col-md-12">
+                <ng-container formArrayName="options" *ngIf="questionForm.value?.type == 'CHECKBOX'">
+                    <div class="row">
+                        <div class="form-group col-md-12"
+                            *ngFor="let controls of questionForm.get('options').controls, let i =index">
+                            <input class="form-control" type="text" formControlName="{{i}}"
+                                placeholder="Enter Option Value" >
+                            <button (click)="deleteOption(i)" class="btn btn-danger btn-sm float-right"><i
+                                    class="pi pi-times"></i></button>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <button type="button" class="btn btn-primary btn-sm" (click)="addNewAnswerOption()">add New Answer
+                                option</button>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="form-group col-md-12">
+                <button type="submit" class="btn btn-success float-right"
+                    [disabled]="!questionForm.valid">Submit</button>
+            </div>
+        </div>
+    </form>
+</p-dialog>

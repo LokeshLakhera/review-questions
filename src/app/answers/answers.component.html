@@ -1,0 +1,21 @@
+<div class="card">
+    <div class="card-body">
+        <strong>Tell us about yourself</strong>
+        <p>{{review.about}}</p>
+        <strong>Questions</strong>
+        <div class="row mt-20">
+            <div class="col-md-12" *ngFor="let qData of review.questions; let i = index;">
+                <strong>{{i+1}} {{qData?.question}}</strong>
+                <ul *ngIf="qData.type == 'CHECKBOX'" style="list-style: none;">
+                    <ng-container *ngFor="let option of qData.options; let j=index;">
+                        <li *ngIf="qData.answer.indexOf(j)>=0">{{option}}</li>
+                    </ng-container>
+                </ul>
+                <div *ngIf="qData.type == 'PARAGRAPH'">
+                    {{qData.answer}}
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-primary btn-sm float-right" routerLink="/">Back To Form</button>
+    </div>
+</div>
