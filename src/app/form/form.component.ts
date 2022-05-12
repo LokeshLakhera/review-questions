@@ -27,17 +27,10 @@ export class FormComponent implements OnInit {
     this.questionForm = this.fb.group({
       type: ['', Validators.required],
       question: ['', Validators.required],
-      answer: [''],
+      paragraph : [''],
+      answer: [[]],
       options: this.fb.array([]),
     });
-  }
-  typeChange(value: string) {
-    if (value == 'CHECKBOX') {
-      this.questionForm.patchValue({ answer: [] });
-    }
-    else if (value == 'PARAGRAPH') {
-      this.questionForm.patchValue({ answer: '' });
-    }
   }
   addNewAnswerOption() {
     let classesData = this.questionForm.get('options') as FormArray;
@@ -45,9 +38,9 @@ export class FormComponent implements OnInit {
   }
   addQuestion() {
     this.questions.push(this.questionForm.value);
-    // this.commonService.addQuestions(this.questions);
     this.addQuestionModal = false;
     this.questionForm.reset();
+    this.questionForm.patchValue({answer:[]})
   }
   reviewSubmit() {
     let data = this.reviewForm.value;
@@ -61,9 +54,6 @@ export class FormComponent implements OnInit {
     } else if(!event.target.checked) {
       this.questions[index].answer.splice(value,1);
     }
-  }
-  addParagraphAnswer(index: any, value: any) {
-    this.questions[index].answer = value;
   }
   deleteOption(index: any) {
     let sections = this.questionForm.get('options') as FormArray;

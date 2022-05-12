@@ -12,14 +12,11 @@
                 <div class="row">
                     <div class="form-group col-md-12" *ngFor="let qData of questions, let i =index">
                         <strong>{{i+1}}. {{qData.question}}</strong>
-                        <ul *ngIf="qData.type == 'CHECKBOX'" style="list-style: none;">
+                        <p *ngIf="qData?.paragraph">{{qData?.paragraph}}</p>
+                        <ul style="list-style: none;">
                             <li *ngFor="let option of qData.options; let j=index;"><input type="checkbox" name="i"
                                     value="j" (change)="addAnswer($event,i,j)"> {{option}}</li>
                         </ul>
-                        <div *ngIf="qData.type == 'PARAGRAPH'">
-                            <textarea id="area" class="form-control" placeholder="Enter Answer" #para
-                                (change)="addParagraphAnswer(i,para.value)"></textarea>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -39,7 +36,7 @@
     <form role="form" (ngSubmit)="addQuestion()" [formGroup]="questionForm">
         <div class="row">
             <div class="form-group col-md-12">
-                <select class="form-control" #type formControlName="type" (change)="typeChange(type.value)">
+                <select class="form-control" #type formControlName="type">
                     <option value="">Select Question Type</option>
                     <option value="CHECKBOX">Checkbox</option>
                     <option value="PARAGRAPH">Paragraph</option>
@@ -49,13 +46,16 @@
                 <textarea id="area" class="form-control" placeholder="Enter Your Question"
                     formControlName="question"></textarea>
             </div>
+            <div class="form-group col-md-12" *ngIf="questionForm.value?.type == 'PARAGRAPH'">
+                <textarea id="area" class="form-control" placeholder="Enter Your paragraph"
+                    formControlName="paragraph"></textarea>
+            </div>
             <div class="col-md-12">
-                <ng-container formArrayName="options" *ngIf="questionForm.value?.type == 'CHECKBOX'">
+                <ng-container formArrayName="options">
                     <div class="row">
                         <div class="form-group col-md-12"
                             *ngFor="let controls of questionForm.get('options').controls, let i =index">
-                            <input class="form-control" type="text" formControlName="{{i}}"
-                                placeholder="Enter Option Value" >
+                            <input class="form-control" type="text" formControlName="{{i}}" placeholder="Enter Option Value" >
                             <button (click)="deleteOption(i)" class="btn btn-danger btn-sm float-right"><i
                                     class="pi pi-times"></i></button>
                         </div>
